@@ -4,6 +4,7 @@ import { clerkMiddleware } from '@clerk/express'
 import { serve } from "inngest/express"
 import { inngest, functions } from "./config/inngest.config.js";
 import path from "path"
+import connectDB from "./config/db.config.js";
 
 const app = express()
 const __dirname = path.resolve()
@@ -29,4 +30,5 @@ if (ENV.NODE_ENV == "production") {
 
 app.listen(ENV.PORT, () => {
     console.log("✅ Server is up and running on port", ENV.PORT)
+    connectDB()
 })

@@ -1,6 +1,7 @@
 import express from "express";
 import { ENV } from "./config/env.config.js";
 import { clerkMiddleware } from '@clerk/express'
+import { serve } from "inngest/express"
 import { inngest, functions } from "./config/inngest.config.js";
 import path from "path"
 

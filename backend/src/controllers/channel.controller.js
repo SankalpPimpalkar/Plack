@@ -74,9 +74,9 @@ export async function getChannelDetails(req, res) {
 
         const messages = await Message
             .find({ channel: channelId })
-            .populate("senderId", "name imageUrl")
+            .populate("sender", "name imageUrl")
             .select("-channel")
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: 1 })
             .limit(25)
 
         return res

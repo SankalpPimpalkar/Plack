@@ -29,8 +29,6 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path='/' element={<LandingPage />} />
-
       {/* Protected Routes */}
       <Route
         path='/channels/*'

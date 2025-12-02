@@ -36,11 +36,11 @@ export default function ChannelHeader({ channelDetails }) {
         };
 
         socket.on("typing:started", handleTypingStart);
-        socket.on("typing:stopped", handleTypingStop);
+        socket.on("typing:stop", handleTypingStop);
 
         return () => {
             socket.off("typing:started", handleTypingStart);
-            socket.off("typing:stopped", handleTypingStop);
+            socket.off("typing:stop", handleTypingStop);
         };
     }, []);
 

@@ -7,7 +7,7 @@ export async function createChannel(req, res) {
         const { name, description } = req.body
         const user = req.user
 
-        if (!name || !description) {
+        if (!name) {
             return res
                 .status(500)
                 .json({ message: "All fields are required (name, description)" })

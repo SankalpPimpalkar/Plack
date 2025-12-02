@@ -1,5 +1,6 @@
 import { Channel } from "../models/channel.model.js"
 import { Message } from "../models/message.model.js"
+import { User } from "../models/user.model.js"
 
 export async function createChannel(req, res) {
     try {
@@ -31,10 +32,31 @@ export async function createChannel(req, res) {
     }
 }
 
+export async function getUserChannels(req, res) {
+    try {
+        const user = req.user
+
+        const channels = await Channel
+            .find({ members: user._id })
+
+        return res
+            .status(200)
+            .json({ message: "Fetched User Channels", channels })
+
+    } catch (error) {
+        console.log("Error in fetching User channels", error)
+        return res
+            .status(500)
+            .json({ message: "Internal Server Error" })
+    }
+}
+
 export async function getAvailableChannels(req, res) {
     try {
+        const user = req.user
+
         const channels = await Channel
-            .find()
+            .find({ members: { $nin: [user._id] } })
             .populate("members", "name imageUrl")
             .populate("createdBy", "name imageUrl")
 
@@ -66,7 +88,9 @@ export async function getChannelDetails(req, res) {
                 .json({ message: "Channel Not Found" })
         }
 
-        if (!channel.members.includes(user._id)) {
+        const isMember = channel.members.filter(member => member._id == user._id).length > 0;
+
+        if (isMember) {
             return res
                 .status(400)
                 .json({ message: "Unauthorized Access - You are not a member" })
@@ -74,7 +98,7 @@ export async function getChannelDetails(req, res) {
 
         const messages = await Message
             .find({ channel: channelId })
-            .populate("sender", "name imageUrl")
+            .populate("sender", "name imageUrl clerkId")
             .select("-channel")
             .sort({ createdAt: 1 })
             .limit(25)

@@ -15,10 +15,10 @@ export default function ChatPage() {
     }
 
     return (
-        <div className="w-full min-h-dvh h-full grid grid-cols-5">
+        <div className="w-full min-h-dvh h-full grid grid-cols-7 divide-x divide-bg-light">
             <Sidebar />
             {
-                channelId ? <ChatWindow /> : <EmptyChatWindow />
+                channelId ? <ChatWindow channelId={channelId} /> : <EmptyChatWindow />
             }
         </div>
     )

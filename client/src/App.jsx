@@ -3,9 +3,10 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { socket } from './lib/socket';
 import LandingPage from './pages/LandingPage';
-import ChatPage from './pages/ChatPage';
+import ChannelPage from './pages/ChannelPage';
 import EmptyChatWindow from './components/EmptyChatWindow';
 import ChatWindow from './components/ChatWindow';
+import { checkHealth } from './lib/api';
 
 export default function App() {
 
@@ -22,17 +23,21 @@ export default function App() {
     };
   }, [user])
 
+  useEffect(() => {
+    checkHealth()
+  }, [])
+
   return (
     <Routes>
       <Route path='/' element={<LandingPage />} />
 
       {/* Protected Routes */}
       <Route
-        path='/chat/*'
+        path='/channels/*'
         element={
           <>
             <SignedIn>
-              <ChatPage />
+              <ChannelPage />
             </SignedIn>
 
             <SignedOut>
@@ -45,7 +50,7 @@ export default function App() {
         <Route path=":channelId" element={<ChatWindow />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/chat" />} />
+      <Route path="*" element={<Navigate to="/channels" />} />
     </Routes>
   );
 }

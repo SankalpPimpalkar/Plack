@@ -25,13 +25,9 @@ export const initSocket = (io) => {
             socket.join(channelId)
             console.log(`User ${user.id} joined channel ${channelId}`);
         })
-        // Client Side - Todo
-        // socket.emit("channel:join", channelId);
 
         // Sending Message
-        socket.on("message:send", async (data) => {
-            const { channelId, text } = data;
-
+        socket.on("message:send", async ({ channelId, text }) => {
             if (!channelId || !text.trim()) return
 
             const message = await Message.create({
@@ -39,25 +35,20 @@ export const initSocket = (io) => {
                 sender: user.id,
                 text
             })
-            const populated = await message.populate("sender", "name imageUrl");
-
+            const populated = await message.populate("sender", "name imageUrl clerkId");
+            console.log(`${user._id} send ${text}`)
             io.to(channelId).emit("message:new", populated);
         })
-
-        // Client Side - Todo
-        // socket.emit("message:send", {
-        //     channelId,
-        //     text: message,
-        // });
 
         // Extra Feature
         socket.on("typing:start", (channelId) => {
             if (!channelId) return
-            socket.to(channelId).emit("typing:started", { user: user.name });
+            console.log(`${user.name} started typing`)
+            socket.to(channelId).emit("typing:started", { name: user.name, clerkId: user.clerkId });
         })
         socket.on("typing:stop", (channelId) => {
             if (!channelId) return
-            socket.to(channelId).emit("typing:stopped", { user: user.name });
+            socket.to(channelId).emit("typing:stopped", { name: user.name, clerkId: user.clerkId });
         })
 
         socket.on("disconnect", () => {
